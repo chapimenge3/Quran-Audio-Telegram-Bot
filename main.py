@@ -12,9 +12,6 @@ token="'906470560:AAElAm238tSjLEuNzjre8uan_1I6SsFty0Y'"
 BOT = Bot(token)
 # callback data 
 ONE, TWO , THREE = range(3)
-
-
-
 def start(update, context):
     '''conversation starts here '''
     user = update.message.from_user
