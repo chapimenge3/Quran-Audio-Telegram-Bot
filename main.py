@@ -1,4 +1,4 @@
-from telegram.ext import Updater,Dispatcher, CallbackQueryHandler, ConversationHandler,CommandHandler
+from telegram.ext import Updater,Dispatcher, CallbackQueryHandler, ConversationHandler,CommandHandler,Filters,MessageHandler
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 import logging
 import telegram
@@ -6,18 +6,16 @@ import json
 from telegram import Bot
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
-
+Num = 1
 # conversation states
 First , Second = range(2)
-token="733525482:AAFB6H52N4dGa2sEwlil4pJNKwdu9TIJnyA"
+token="1058927677:AAFHYMq313DLDY8paWCG-eAfrX8RgnzNSVk"
 BOT = Bot(token)
-# callback data 
 
 with open('files.json') as files:
     data = json.load(files)
 with open('Surah.json') as Surah:
     surah = json.load(Surah)
-
 
 ONE, TWO , THREE = range(3)
 def start(update, context):
@@ -30,7 +28,7 @@ def start(update, context):
         [ InlineKeyboardButton('All Quran', callback_data=str(THREE))]
     ]
     reply_key = InlineKeyboardMarkup(keyboard)
-    welcome = """<code>As-salāmu ʿalaykum wa-raḥmatu llāhi wa-barakātuhu """ + user.first_name + user.last_name + """here you can get Quran Audio by surah or All at once </code>
+    welcome = """<code>As-salāmu ʿalaykum wa-raḥmatu llāhi wa-barakātuhu """ + str(user.first_name) + str(user.last_name) + """here you can get Quran Audio by surah or All at once </code>
 <strong>Choose below :</strong>"""
     update.message.reply_text(
         welcome,
@@ -65,8 +63,6 @@ Choose below :</strong>"""
 def bynum(update, context):
     query = update.callback_query
     bot = context.bot
-    # print(dir(query.message),"\n\n\n")
-    # print(bot.sendDocument)
     keyboard = []
     num = 1 
     for _ in range(12):
@@ -86,10 +82,39 @@ def bynum(update, context):
         reply_markup=reply_markup
     )
     return Second
+def byname(update,context):
+    query = update.callback_query
+    bot = context.bot
+    keyboard = []
+    num = 0
+    l=[]
+    print(surah,"\n\n")
+    r = list(surah.items()) 
+    for _ in range(25):
+        row =[]
+        if num == 114:
+            break
+        for __ in range(5):
+            if num == 114:
+                break
+            row.append(InlineKeyboardButton(r[num][1],callback_data=str(num)))
+            num+=1
+            print(num)
+        keyboard.append(row)
+    # keyboard.append(InlineKeyboardButton("chapi menge",callback_data=str(num)))
+    keyboard.append([InlineKeyboardButton("⬅️  BACk",callback_data="BACK")])
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    bot.edit_message_text(
+        chat_id=query.message.chat_id,
+        message_id=query.message.message_id,
+        text="Please Select your choice surah Name",
+        reply_markup=reply_markup
+    )
+    return Second
 def file(update,context):
     query = update.callback_query
     file_id = data[str(query.data)]
-    bot = context.bot
+    bot = context.bot 
     for i in surah:
         print(i)
     bot.edit_message_text(
@@ -102,6 +127,14 @@ As-salāmu ʿalaykum wa-raḥmatu llāhi wa-barakātuhu."""
                    audio=file_id
                    )
     return First
+def save(update,context):
+    global Num
+    fil = open('a.out','a')
+    print("capi", Num)
+    fil.write( str(update.message.audio.file_id) + "  " + str(update.message.audio.title) + "   " + str(Num) +"\n")
+    Num += 1
+    fil.close()
+    return First
 def main():
     # Create Updater and pass the token
     updater = Updater(token,use_context=True)
@@ -110,13 +143,14 @@ def main():
     #setup conversation handlerkeyboard
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler('start', start)] ,
-        states={
-            First : [CallbackQueryHandler(bynum,pattern='^' + str(ONE) + '$')],
+        states={ 
+            First : [CallbackQueryHandler(bynum,pattern='^' + str(ONE) + '$'),
+                     CallbackQueryHandler(byname,pattern='^' + str(TWO) + '$'),
+                     MessageHandler(Filters.audio, save),
+                     MessageHandler(Filters.document,save)],
             Second : [CallbackQueryHandler(file,pattern=r"\d|\d\d|\d\d\d"),
                       CallbackQueryHandler(startover,pattern="BACK"),
                     ],
-
-
         },
         fallbacks=[CommandHandler('start', start)] ,
         # per_message=True
@@ -127,5 +161,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
+fil.close()
