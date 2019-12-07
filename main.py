@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 # conversation states
 First , Second = range(2)
-token="906470560:AAElAm238tSjLEuNzjre8uan_1I6SsFty0Y"
+token="733525482:AAFB6H52N4dGa2sEwlil4pJNKwdu9TIJnyA"
 BOT = Bot(token)
 # callback data 
 
@@ -85,14 +85,8 @@ def bynum(update, context):
     return Second
 def file(update,context):
     query = update.callback_query
-    # if str(query.data).isdigit():
-    #     print("yes")
-    # for i in data:
-    #     print(i, data[i])
     file_id = data[str(query.data)]
     bot = context.bot
-    # print("the file is " , data.get(str(query.data) , "None not found"))
-    # BOT.send
     bot.edit_message_text(
         chat_id=query.message.chat_id,
         message_id=query.message.message_id,
