@@ -90,10 +90,11 @@ def file(update,context):
     bot.edit_message_text(
         chat_id=query.message.chat_id,
         message_id=query.message.message_id,
-        text=query.message.text
+        text="""To get started again send me /start!
+As-salāmu ʿalaykum wa-raḥmatu llāhi wa-barakātuhu."""
     )
     BOT.sendAudio(chat_id=query.message.chat_id ,
-                   audio="CQADBAADKQYAAiYrWVNTaHhX3cysuRYE"
+                   audio=file_id
                    )
     return First
 def main():
