@@ -1,14 +1,8 @@
 import json
 
-with open('getup.json') as files:
-    data = json.load(files)
-
-l = []
-for i in data["result"]:
-    l.append( [int(i['message']['audio']['title']), i['message']['audio']['file_id'] ] )
-l.sort()
-print('{')
-for i in l:
-    print('    "',i[0],'": "', i[1], '" ,' ,sep='')
-
-print('}')
+with open('Surah.json') as s:
+    surah = json.load(s)
+print("{")
+for i,j in surah.items():
+    print('    "',j,'" : "',i,'" ,' , sep="")
+print("}")
