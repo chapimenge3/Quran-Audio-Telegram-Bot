@@ -2,15 +2,20 @@ from telegram.ext import Updater,Dispatcher, CallbackQueryHandler, ConversationH
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 import logging
 import telegram
+import json
 from telegram import Bot
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # conversation states
 First , Second = range(2)
-token="'906470560:AAElAm238tSjLEuNzjre8uan_1I6SsFty0Y'"
+token="906470560:AAElAm238tSjLEuNzjre8uan_1I6SsFty0Y"
 BOT = Bot(token)
 # callback data 
+
+with open('files.json') as files:
+    data = json.load(files)
+
 ONE, TWO , THREE = range(3)
 def start(update, context):
     '''conversation starts here '''
@@ -43,8 +48,8 @@ Choose below :</strong>"""
     ]
     reply_key = InlineKeyboardMarkup(keyboard)
     
-    print(dir(query.message))
-    # logger.info("User %s started the conversation.", user.first_name)
+    # print(dir(query.message))
+    logger.info("User %s started the conversation.", user.first_name)
     bot = context.bot
     bot.edit_message_text(
         chat_id=query.message.chat_id,
@@ -57,8 +62,8 @@ Choose below :</strong>"""
 def bynum(update, context):
     query = update.callback_query
     bot = context.bot
-    print(dir(query.message),"\n\n\n")
-    print(dir(bot))
+    # print(dir(query.message),"\n\n\n")
+    # print(bot.sendDocument)
     keyboard = []
     num = 1 
     for _ in range(12):
@@ -80,19 +85,26 @@ def bynum(update, context):
     return Second
 def file(update,context):
     query = update.callback_query
-    if str(query.data).isdigit():
-        print("yes")
+    # if str(query.data).isdigit():
+    #     print("yes")
+    # for i in data:
+    #     print(i, data[i])
+    file_id = data[str(query.data)]
     bot = context.bot
+    # print("the file is " , data.get(str(query.data) , "None not found"))
     # BOT.send
     bot.edit_message_text(
         chat_id=query.message.chat_id,
         message_id=query.message.message_id,
         text=query.message.text
     )
-    return THREE
+    BOT.sendAudio(chat_id=query.message.chat_id ,
+                   audio="CQADBAADKQYAAiYrWVNTaHhX3cysuRYE"
+                   )
+    return First
 def main():
     # Create Updater and pass the token
-    updater = Updater(token=token,use_context=True)
+    updater = Updater(token,use_context=True)
     # get dispatcher to register handlers
     dp = updater.dispatcher
     #setup conversation handlerkeyboard
