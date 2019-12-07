@@ -15,6 +15,9 @@ BOT = Bot(token)
 
 with open('files.json') as files:
     data = json.load(files)
+with open('Surah.json') as Surah:
+    surah = json.load(Surah)
+
 
 ONE, TWO , THREE = range(3)
 def start(update, context):
@@ -87,6 +90,8 @@ def file(update,context):
     query = update.callback_query
     file_id = data[str(query.data)]
     bot = context.bot
+    for i in surah:
+        print(i)
     bot.edit_message_text(
         chat_id=query.message.chat_id,
         message_id=query.message.message_id,
