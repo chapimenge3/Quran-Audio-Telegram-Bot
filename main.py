@@ -208,7 +208,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-<<<<<<< HEAD
-fil.close()
-=======
->>>>>>> by number done
