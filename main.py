@@ -168,13 +168,6 @@ As-salāmu ʿalaykum wa-raḥmatu llāhi wa-barakātuhu."""
     file_id = data[surah[str(query.data)]]
     BOT.sendAudio(chat_id=query.message.chat_id , audio=file_id)
     return First
-def save(update,context):
-    global Num
-    fil = open('a.out','a')
-    fil.write( str(update.message.audio.file_id) + "  " + str(update.message.audio.title) + "   " + str(Num) +"\n")
-    Num += 1
-    fil.close()
-    return First
 def main():
 
     updater = Updater(token,use_context=True)
@@ -187,17 +180,14 @@ def main():
             First : [CallbackQueryHandler(bynum1,pattern='^' + str(ONE) + '$'),
                      CallbackQueryHandler(byname,pattern='^' + str(TWO) + '$'),
                      CallbackQueryHandler(file,pattern='allquran') ,
-                     MessageHandler(Filters.audio, save),
-                     MessageHandler(Filters.document,save)],
+                      ],
             Second : [CallbackQueryHandler(file,pattern=r"\d|\d\d|\d\d\d"),
                       CallbackQueryHandler(byname2,pattern="nextname2"),
                       CallbackQueryHandler(startover,pattern="cancel"),
                       CallbackQueryHandler(bynum2,pattern="next"),
                       CallbackQueryHandler(bynum1,pattern="backnumber"),
                       CallbackQueryHandler(byname,pattern="backname")
-                    #   CallbackQueryHandler(byname2,pattern="nextname2"),
                     ],
-            THREE : []
         },
         fallbacks=[CommandHandler('start', start)] ,
         # per_message=True
