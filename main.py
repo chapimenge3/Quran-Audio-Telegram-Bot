@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 Num = 1
 # conversation states
 First , Second = range(2)
-token="1058927677:AAFHYMq313DLDY8paWCG-eAfrX8RgnzNSVk"
+token=""
 BOT = Bot(token)
 
 with open('files.json') as files:
