@@ -485,7 +485,7 @@ def show_suras(update: Update, context: CallbackContext):
         s_index = str(i).zfill(3)
         row.append(InlineKeyboardButton(
             all_surah[s_index], callback_data=f'surah:{reciter_id}:{i}'))
-        if len(row) == 5:
+        if len(row) == 3:
             keyboard.append(row)
             row = []
     if row:
