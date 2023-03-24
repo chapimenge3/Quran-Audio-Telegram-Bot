@@ -5,6 +5,8 @@ from telegram.ext import Updater, CommandHandler, CallbackContext, CallbackQuery
 from deta import Deta
 from fastapi import FastAPI
 from pydantic import BaseModel
+from typing import Optional
+
 
 TOKEN = os.environ['TOKEN']
 
@@ -18,19 +20,18 @@ Please click on the button below to choose the reciter you want to listen to.
 
 class TelegramWebhook(BaseModel):
     update_id: int
-    message: dict
-    edited_message: dict
-    channel_post: dict
-    edited_channel_post: dict
-    inline_query: dict
-    chosen_inline_result: dict
-    callback_query: dict
-    shipping_query: dict
-    pre_checkout_query: dict
-    poll: dict
-    poll_answer: dict
-    my_chat_member: dict
-    chat_member: dict
+    message: Optional[dict]
+    edited_message: Optional[dict]
+    channel_post: Optional[dict]
+    edited_channel_post: Optional[dict]
+    inline_query: Optional[dict]
+    chosen_inline_result: Optional[dict]
+    callback_query: Optional[dict]
+    shipping_query: Optional[dict]
+    pre_checkout_query: Optional[dict]
+    poll: Optional[dict]
+    poll_answer: Optional[dict]
+
 
 
 app = FastAPI()
@@ -562,4 +563,8 @@ def webhook(data: TelegramWebhook):
     register_dispatcher(dispatcher)
     dispatcher.process_update(update)
 
+    return {"status": "ok"}
+
+@app.get("/")
+def index():
     return {"status": "ok"}
