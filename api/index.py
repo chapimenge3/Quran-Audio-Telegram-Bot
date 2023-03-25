@@ -189,7 +189,7 @@ def send_audio(update: Update, context: CallbackContext):
     query.edit_message_text(text='Sending audio...')
     file_id = db.get(f'{surah_id}-{reciter_id}')
     if not file_id:
-        path = f'{surah_id}-{reciter_id}.mp3'
+        path = f'/tmp/{surah_id}-{reciter_id}.mp3'
         download_url = None
         for reciter in RECITATIONS:
             if reciter['key'] == str(reciter_id):
