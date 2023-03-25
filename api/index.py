@@ -96,17 +96,42 @@ def start(update: Update, context: CallbackContext):
 def show_reciters(update: Update, context: CallbackContext):
     query = update.callback_query
     query.answer()
-
+    text = query.data
     keyboard = []
     row = []
-    for reciter in RECITATIONS:
+
+    if text.startswith('next_reciter:'):
+        intial = int(text.split(':')[1]) + 1
+        end = intial + 19
+        end = len(RECITATIONS) if end > len(RECITATIONS) else end
+    elif text.startswith('back_reciter:'):
+        intial = int(text.split(':')[1]) - 20
+        end = intial + 19
+        end = len(RECITATIONS) if end > len(RECITATIONS) else end
+    else:
+        intial = 0
+        end = 20
+
+    for reciter in RECITATIONS[intial:end]:
         row.append(InlineKeyboardButton(
-            reciter['name'], callback_data=reciter['id']))
+            reciter['name'], callback_data=reciter['key']))
         if len(row) == 2:
             keyboard.append(row)
             row = []
     if row:
         keyboard.append(row)
+
+    util_btn = []
+    if intial >= 0 and end < len(RECITATIONS):
+        util_btn.append(InlineKeyboardButton(
+            "Next", callback_data=f'next_reciter:{end}'))
+
+    if intial != 0:
+        util_btn.append(InlineKeyboardButton(
+            "Back", callback_data=f'back_reciter:{intial}'))
+
+    if util_btn:
+        keyboard.append(util_btn)
     reply_markup = InlineKeyboardMarkup(keyboard)
     query.edit_message_text(text="Choose a reciter", reply_markup=reply_markup)
 
@@ -151,7 +176,7 @@ def show_suras(update: Update, context: CallbackContext):
 
     keyboard.append(util_btn)
     reply_markup = InlineKeyboardMarkup(keyboard)
-    query.edit_message_text(text="Choose a sura", reply_markup=reply_markup)
+    query.edit_message_text(text="Choose a surah", reply_markup=reply_markup)
 
 
 def send_audio(update: Update, context: CallbackContext):
