@@ -230,7 +230,8 @@ def send_audio(update: Update, context: CallbackContext):
             query.delete_message()
             os.remove(path)
         except Exception as e:
-            if 'is too big' in str(e):
+            print(e)
+            if 'File too large' in str(e):
                 keyboard = [[InlineKeyboardButton(
                     'Download', url=download_url)]]
                 reply_markup = InlineKeyboardMarkup(keyboard)
