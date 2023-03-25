@@ -9,6 +9,7 @@ from typing import Optional
 import httpx
 
 TOKEN = os.environ['TOKEN']
+ADMIN_ID = [1697562512]
 
 WELCOME_MESSAGE = """Aselamaleykum {name}
 
@@ -262,8 +263,25 @@ def error_handler(update: Update, context: CallbackContext):
         chat_id=update.effective_chat.id, text="Something went wrong, Please try again later.")
 
 
+def stat(update: Update, context: CallbackContext):
+    query = update.message
+    effective_user = update.effective_user
+    if effective_user.id not in ADMIN_ID:
+        query.reply_text(text='You are not allowed to use this command.')
+        return
+    query.reply_text(text='Sending total users...')
+    users = user_db.fetch()
+    total_users = users.count
+    while users.last:
+        users = user_db.fetch(last=users.last)
+        total_users += users.count
+
+    query.reply_text(text=f'Total users: {total_users}')
+
+
 def register_dispatcher(dispatcher):
     dispatcher.add_handler(CommandHandler("start", start))
+    dispatcher.add_handler(CommandHandler("stat", stat))
 
     # show reciters must filter patterns like next_reciter:20 or back_reciter:20 or start.
     dispatcher.add_handler(CallbackQueryHandler(
