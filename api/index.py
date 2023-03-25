@@ -271,16 +271,18 @@ def stat(update: Update, context: CallbackContext):
         return
     query.reply_text(text='Sending total users...')
     total_users = 0
-    users = None
-    while True:
-        users = user_db.fetch(last=users.last)
+    users = user_db.fetch()
+    total_users = 0
+    for user in users:
+        if user['key'].count('/') == 2:
+            continue
+        total_users += 1
+    while users.last:
+        users = user_db.fetch(start_key=users.last)
         for user in users:
             if user['key'].count('/') == 2:
                 continue
             total_users += 1
-
-        if not users.last:
-            break
 
     query.reply_text(text=f'Total users: {total_users}')
 
