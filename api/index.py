@@ -234,11 +234,12 @@ def send_audio(update: Update, context: CallbackContext):
                 keyboard = [[InlineKeyboardButton(
                     'Download', url=download_url)]]
                 reply_markup = InlineKeyboardMarkup(keyboard)
-                query.edit_message_text(
+                context.bot.send_message(
+                    chat_id=query.message.chat_id,
                     text=FILE_TOO_LARGE, reply_markup=reply_markup)
 
             os.remove(path)
-            return
+            raise e
 
     else:
         context.bot.send_audio(chat_id=query.message.chat_id,
