@@ -19,6 +19,13 @@ Please click on the button below to choose the reciter you want to listen to.
 Join my channel https://t.me/codewizme to learn more about me and my projects.
 """
 
+FILE_TOO_LARGE = '''File is too large to update. Due to telegram limitations. We are working on it to fix the issue. 
+
+In the meantime you can download the file that might be less than 50mb.
+
+To download the file click on the button below.
+'''
+
 
 class TelegramWebhook(BaseModel):
     update_id: int
@@ -207,21 +214,32 @@ def send_audio(update: Update, context: CallbackContext):
         if not download_url or not os.path.exists(path):
             query.edit_message_text(
                 text='Something went wrong, Please try again later.')
-            return
 
         query.edit_message_text(
             text='Uploading audio, Please wait...')
-        file_id = context.bot.send_audio(chat_id=query.message.chat_id,
-                                         audio=open(path, 'rb'))
-        os.remove(path)
-        db.put({
-            "key": f'{surah_id}-{reciter_id}',
-            "file_id": file_id['audio']['file_id'],
-            "name": all_surah[surah_id],
-            "surah_number": surah_id,
-            "reciter": reciter_id
-        })
-        query.delete_message()
+        try:
+            file_id = context.bot.send_audio(chat_id=query.message.chat_id,
+                                             audio=open(path, 'rb'))
+            db.put({
+                "key": f'{surah_id}-{reciter_id}',
+                "file_id": file_id['audio']['file_id'],
+                "name": all_surah[surah_id],
+                "surah_number": surah_id,
+                "reciter": reciter_id
+            })
+            query.delete_message()
+            os.remove(path)
+        except Exception as e:
+            if 'is too big' in str(e):
+                keyboard = [[InlineKeyboardButton(
+                    'Download', url=download_url)]]
+                reply_markup = InlineKeyboardMarkup(keyboard)
+                query.edit_message_text(
+                    text=FILE_TOO_LARGE, reply_markup=reply_markup)
+
+            os.remove(path)
+            return
+
     else:
         context.bot.send_audio(chat_id=query.message.chat_id,
                                audio=file_id['file_id'])
