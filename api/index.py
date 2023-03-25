@@ -245,6 +245,11 @@ def error_handler(update: Update, context: CallbackContext):
 def register_dispatcher(dispatcher):
     dispatcher.add_handler(CommandHandler("start", start))
 
+    # show reciters must filter patterns like next_reciter:20 or back_reciter:20 or start.
+    dispatcher.add_handler(CallbackQueryHandler(
+        show_reciters, pattern='^next_reciter:\d+$'))
+    dispatcher.add_handler(CallbackQueryHandler(
+        show_reciters, pattern='^back_reciter:\d+$'))
     dispatcher.add_handler(CallbackQueryHandler(
         show_reciters, pattern='^start$'))
     dispatcher.add_handler(CallbackQueryHandler(
@@ -267,7 +272,7 @@ def main():
 def webhook(data: TelegramWebhook):
     bot = Bot(token=TOKEN)
     update = Update.de_json(data.dict(), bot)
-    dispatcher = Dispatcher(bot, None, workers=0, use_context=True)
+    dispatcher = Dispatcher(bot, None, workers=4, use_context=True)
     register_dispatcher(dispatcher)
     dispatcher.process_update(update)
 
