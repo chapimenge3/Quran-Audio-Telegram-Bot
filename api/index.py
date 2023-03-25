@@ -248,7 +248,7 @@ def send_audio(update: Update, context: CallbackContext):
                                audio=file_id['file_id'])
 
     now = datetime.now()
-    today = now.strftime("%d/%m/%Y %H:%M:%S")
+    today = now.strftime("%d/%m/%Y")
     stat = user_db.get(today)
     if stat:
         stat['count'] += 1
