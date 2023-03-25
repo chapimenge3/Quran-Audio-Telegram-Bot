@@ -72,7 +72,7 @@ def download_audio(url, path):
 
         return True
     except Exception as e:
-        print(e)
+        print('Downloading', e)
         return False
 
 
