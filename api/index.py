@@ -270,11 +270,17 @@ def stat(update: Update, context: CallbackContext):
         query.reply_text(text='You are not allowed to use this command.')
         return
     query.reply_text(text='Sending total users...')
-    users = user_db.fetch()
-    total_users = users.count
-    while users.last:
+    total_users = 0
+    users = None
+    while True:
         users = user_db.fetch(last=users.last)
-        total_users += users.count
+        for user in users:
+            if user['key'].count('/') == 2:
+                continue
+            total_users += 1
+
+        if not users.last:
+            break
 
     query.reply_text(text=f'Total users: {total_users}')
 
